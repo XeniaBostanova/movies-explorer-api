@@ -4,6 +4,6 @@ Movies Explorer - сервис для поиска фильмов, сохран�
 
 Используемые технологии - NodeJS, Express, ESlint, MongoDB, Nginx.
 
-IP: 84.201.176.19
+IP: 84.201.164.106
 
 Ссылка API: http://api.diploma.movies.nomoredomains.xyz
