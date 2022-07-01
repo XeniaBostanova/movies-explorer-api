@@ -5,9 +5,8 @@ const Movie = require('../models/movie');
 
 const getMovies = (_, res, next) => {
   Movie.find({})
-    .populate('owner')
     .then((movies) => res.send(movies))
-    . catch(next);
+    .catch(next);
 };
 
 const deleteMovie = (req, res, next) => {

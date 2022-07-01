@@ -14,10 +14,6 @@ const createUser = (req, res, next) => {
     name, email, password,
   } = req.body;
 
-  if (!email || !password) {
-    return next(new BadRequestError('Не передан email или пароль'));
-  }
-
   return bcrypt.hash(password, saltRounds)
     .then((hash) => User.create({
       name, email, password: hash,
@@ -53,16 +49,15 @@ const updateUserProfile = (req, res, next) => {
       if (err.name === 'ValidationError') {
         return next(new BadRequestError('Переданы некорректные данные при обновлении профиля'));
       }
+      if (err.code === MONGO_DUPLICATE_KEY_CODE) {
+        return next(new ConflictError('Пользователь с таким email уже существует'));
+      }
       return next(err);
     });
 };
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
-
-  if (!email || !password) {
-    return next(new BadRequestError('Не передан email или пароль'));
-  }
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
@@ -81,12 +76,7 @@ const getCurrentUser = (req, res, next) => {
       }
       return res.send(user);
     })
-    .catch((err) => {
-      if (err.kind === 'ObjectId') {
-        return next(new BadRequestError('Переданный _id некорректный'));
-      }
-      return next(err);
-    });
+    .catch(next);
 };
 
 module.exports = {
